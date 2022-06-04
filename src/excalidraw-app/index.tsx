@@ -562,7 +562,7 @@ const ExcalidrawWrapper = () => {
   );
 
   const renderFooter = useCallback(
-    (isMobile: boolean) => {
+    (isMobile: boolean, appState: AppState) => {
       const renderEncryptedIcon = () => (
         <a
           className="encrypted-icon tooltip"
@@ -622,6 +622,13 @@ const ExcalidrawWrapper = () => {
         <>
           {renderEncryptedIcon()}
           {renderLanguageList()}
+          <br />
+          <br />
+          <br />
+          foo
+          {appState.draggingElement === null
+            ? "null"
+            : JSON.stringify(appState.draggingElement)}
         </>
       );
     },
