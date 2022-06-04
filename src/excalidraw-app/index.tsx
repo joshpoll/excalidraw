@@ -625,13 +625,18 @@ const ExcalidrawWrapper = () => {
           <br />
           <br />
           <br />
-          dragging element:
-          <br />
-          {JSON.stringify(appState.draggingElement)}
+          {/* dragging element:
+          <br /> */}
+          {/* {JSON.stringify(appState.draggingElement)} */}
+          {excalidrawAPI ? (
+            JSON.stringify(excalidrawAPI.getSceneElementsIncludingDeleted())
+          ) : (
+            <></>
+          )}
         </>
       );
     },
-    [langCode],
+    [langCode, excalidrawAPI],
   );
 
   const renderCustomStats = () => {
