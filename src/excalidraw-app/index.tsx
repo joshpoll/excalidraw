@@ -625,10 +625,9 @@ const ExcalidrawWrapper = () => {
           <br />
           <br />
           <br />
-          foo
-          {appState.draggingElement === null
-            ? "null"
-            : JSON.stringify(appState.draggingElement)}
+          dragging element:
+          <br />
+          {JSON.stringify(appState.draggingElement)}
         </>
       );
     },
