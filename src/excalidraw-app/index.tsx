@@ -634,11 +634,17 @@ const ExcalidrawWrapper = () => {
           ) : (
             <></>
           )} */}
-          <SceneGraphEditor />
+          <SceneGraphEditor
+            elements={
+              excalidrawAPI
+                ? excalidrawAPI.getSceneElementsIncludingDeleted()
+                : []
+            }
+          />
         </>
       );
     },
-    [langCode /* , excalidrawAPI */],
+    [langCode, excalidrawAPI],
   );
 
   const renderCustomStats = () => {

@@ -2,6 +2,7 @@
 import React, { useCallback, useState, useRef } from "react";
 
 import ReactFlow, { Node } from "react-flow-renderer";
+import { ExcalidrawElement } from "../../element/types";
 
 // type Node = {
 //   id: number | string;
@@ -35,9 +36,23 @@ const initialElements: Node[] = [
   // { id: "e2-3", source: "2", target: "3" }
 ];
 
-export const SceneGraphEditor = () => {
+type Props = {
+  elements: readonly ExcalidrawElement[];
+};
+
+export const SceneGraphEditor = (props: Props) => {
   const [els, setEls] = useState(initialElements);
   const yPos = useRef(0);
+
+  const elements = props.elements
+    .map((e) => e.type)
+    .map((t, i) => ({
+      id: `${Math.random()}`,
+      position: { x: 100, y: i * 50 },
+      data: { label: t },
+    }));
+
+  console.log(props.elements, elements);
 
   const addNode = useCallback(() => {
     yPos.current += 50;
@@ -71,7 +86,7 @@ export const SceneGraphEditor = () => {
   return (
     <div className="App">
       <div style={{ width: 1000, height: 300 }}>
-        <ReactFlow nodes={els} /* onConnect={addEdge} */ />
+        <ReactFlow nodes={elements} /* onConnect={addEdge} */ />
       </div>
       <button onClick={addNode}>Add</button>
     </div>
