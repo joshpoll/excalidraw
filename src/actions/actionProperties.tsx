@@ -216,7 +216,9 @@ export const actionChangeStrokeColor = register({
         ...appState,
         ...value,
       },
-      commitToHistory: !!value.currentItemStrokeColor,
+      commitToHistory: !!value.currentItemStrokeColor
+        ? "changeStrokeColor"
+        : false,
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -259,7 +261,9 @@ export const actionChangeBackgroundColor = register({
         ...appState,
         ...value,
       },
-      commitToHistory: !!value.currentItemBackgroundColor,
+      commitToHistory: !!value.currentItemBackgroundColor
+        ? "changeBackgroundColor"
+        : false,
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (

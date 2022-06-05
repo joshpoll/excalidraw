@@ -40,6 +40,11 @@ class History {
   private redoStack: DehydratedHistoryEntry[] = [];
   private lastEntry: HistoryEntry | null = null;
   private action: ActionName | null = null;
+  private trace: any[];
+
+  constructor(trace: any[]) {
+    this.trace = trace;
+  }
 
   private hydrateHistoryEntry({
     action,
@@ -205,6 +210,8 @@ class History {
         return;
       }
 
+      this.trace.push(this.action);
+      console.log("trace (from history)", this.trace);
       this.stateHistory.push(newEntryDehydrated);
       this.lastEntry = newEntry;
       // As a new entry was pushed, we invalidate the redo stack
@@ -269,10 +276,10 @@ class History {
 
   // Suspicious that this is called so many places. Seems error-prone.
   resumeRecording(action?: ActionName | null) {
-    this.action = action ?? null;
-    // if (action !== undefined) {
-    //   this.action = action;
-    // }
+    // this.action = action ?? null;
+    if (action !== undefined) {
+      this.action = action;
+    }
     this.recording = true;
   }
 
@@ -281,6 +288,18 @@ class History {
       this.pushEntry(state, elements, this.action ?? undefined);
       this.recording = false;
     }
+  }
+
+  setAction(action: ActionName | null) {
+    this.action = action;
+  }
+
+  getAction(): ActionName | null {
+    return this.action;
+  }
+
+  isRecording(): boolean {
+    return this.recording;
   }
 }
 

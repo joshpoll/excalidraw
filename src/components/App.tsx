@@ -36,7 +36,7 @@ import {
 import { createRedoAction, createUndoAction } from "../actions/actionHistory";
 import { ActionManager } from "../actions/manager";
 import { actions } from "../actions/register";
-import { ActionResult, NamedActionResult } from "../actions/types";
+import { ActionName, ActionResult, NamedActionResult } from "../actions/types";
 import { trackEvent } from "../analytics";
 import { getDefaultAppState, isEraserActive } from "../appState";
 import {
@@ -78,7 +78,6 @@ import { restore, restoreElements } from "../data/restore";
 import {
   dragNewElement,
   dragSelectedElements,
-  duplicateElement,
   getCommonBounds,
   getCursorForResizingElement,
   getDragOffsetXY,
@@ -116,7 +115,7 @@ import {
 } from "../element/binding";
 import { LinearElementEditor } from "../element/linearElementEditor";
 import { mutateElement, newElementWith } from "../element/mutateElement";
-import { deepCopyElement, newFreeDrawElement } from "../element/newElement";
+import { deepCopyElement, newFreeDrawElement, duplicateElement } from '../element/newElement';
 import {
   hasBoundTextElement,
   isBindingElement,
@@ -291,6 +290,9 @@ const gesture: Gesture = {
   initialScale: null,
 };
 
+// TODO
+type Trace = any;
+
 class App extends React.Component<AppProps, AppState> {
   canvas: AppClassProperties["canvas"] = null;
   rc: RoughCanvas | null = null;
@@ -316,6 +318,7 @@ class App extends React.Component<AppProps, AppState> {
   public libraryItemsFromStorage: LibraryItems | undefined;
   private id: string;
   private history: History;
+  private trace: Trace[];
   private excalidrawContainerValue: {
     container: HTMLDivElement | null;
     id: string;
@@ -400,7 +403,8 @@ class App extends React.Component<AppProps, AppState> {
     };
 
     this.scene = new Scene();
-    this.history = new History();
+    this.trace = [];
+    this.history = new History(this.trace);
     this.actionManager = new ActionManager(
       this.syncActionResult,
       () => this.state,
@@ -611,6 +615,7 @@ class App extends React.Component<AppProps, AppState> {
         });
         this.scene.replaceAllElements(actionResult.elements);
         if (actionResult.commitToHistory) {
+          // this.trace.push(actionResult.commitToHistory);
           this.history.resumeRecording(actionResult.commitToHistory);
         }
       }
@@ -624,6 +629,7 @@ class App extends React.Component<AppProps, AppState> {
 
       if (actionResult.appState || editingElement) {
         if (actionResult.commitToHistory) {
+          // this.trace.push(actionResult.commitToHistory);
           this.history.resumeRecording(actionResult.commitToHistory);
         }
 
@@ -1199,6 +1205,9 @@ class App extends React.Component<AppProps, AppState> {
       this.setState({ scrolledOutside });
     }
 
+    // if (this.history.isRecording()) {
+    //   this.trace.push(this.history.getAction());
+    // }
     this.history.record(this.state, this.scene.getElementsIncludingDeleted());
 
     this.scheduleImageRefresh();
@@ -1364,6 +1373,7 @@ class App extends React.Component<AppProps, AppState> {
         this.initializeImageDimensions(imageElement);
         this.setState({ selectedElementIds: { [imageElement.id]: true } });
 
+        this.history.setAction("paste");
         return;
       }
 
@@ -1394,6 +1404,10 @@ class App extends React.Component<AppProps, AppState> {
       } else if (data.text) {
         this.addTextFromPaste(data.text);
       }
+      console.log("paste");
+      this.trace.push("paste");
+      console.log("trace", this.trace);
+      this.history.setAction("paste");
       this.setActiveTool({ type: "selection" });
       event?.preventDefault();
     },
@@ -3887,6 +3901,14 @@ class App extends React.Component<AppProps, AppState> {
     pointerDownState: PointerDownState,
   ) {
     return withBatchedUpdatesThrottled((event: PointerEvent) => {
+      // if (!pointerDownState.drag.hasOccurred) {
+      //   if (event.altKey && !pointerDownState.hit.hasBeenDuplicated) {
+      //     this.trace.push("duplicate");
+      //   } else {
+      //     this.trace.push("drag");
+      //   }
+      //   console.log("trace", this.trace, this.history.getSnapshotForTest().stateHistory);
+      // }
       // We need to initialize dragOffsetXY only after we've updated
       // `state.selectedElementIds` on pointerDown. Doing it here in pointerMove
       // event handler should hopefully ensure we're already working with
@@ -4283,7 +4305,6 @@ class App extends React.Component<AppProps, AppState> {
             ? this.state.editingElement
             : null,
       });
-
       this.savePointer(childEvent.clientX, childEvent.clientY, "up");
 
       // Handle end of dragging a point of a linear element, might close a loop
@@ -4487,6 +4508,23 @@ class App extends React.Component<AppProps, AppState> {
             .getElementsIncludingDeleted()
             .filter((el) => el.id !== resizingElement.id),
         );
+      }
+
+      if (
+        draggingElement !== null &&
+        resizingElement === null &&
+        !pointerDownState.boxSelection.hasOccurred
+      ) {
+        if (pointerDownState.hit.hasBeenDuplicated) {
+          this.history.setAction("duplicate" as ActionName);
+        } else {
+          this.history.setAction("drag" as ActionName);
+        }
+        // this.trace.push("duplicate");
+        // console.log("trace", this.trace);
+        // this.history.setAction("drag object" as ActionName);
+        // this.trace.push("drag object");
+        // console.log("trace", this.trace);
       }
 
       // Code below handles selection when element(s) weren't
