@@ -73,6 +73,7 @@ import { LocalData } from "./data/LocalData";
 import { isBrowserStorageStateNewer } from "./data/tabSync";
 import clsx from "clsx";
 import { parseLibraryTokensFromUrl, useHandleLibrary } from "../data/library";
+import { SceneGraphEditor } from "./components/SceneGraphEditor";
 
 const isExcalidrawPlusSignedUser = document.cookie.includes(
   COOKIES.AUTH_STATE_COOKIE,
@@ -620,23 +621,24 @@ const ExcalidrawWrapper = () => {
       }
       return (
         <>
-          {renderEncryptedIcon()}
-          {renderLanguageList()}
+          {/* {renderEncryptedIcon()}
+          {renderLanguageList()} */}
+          {/* <br />
           <br />
-          <br />
-          <br />
+          <br /> */}
           {/* dragging element:
           <br /> */}
           {/* {JSON.stringify(appState.draggingElement)} */}
-          {excalidrawAPI ? (
+          {/* {excalidrawAPI ? (
             JSON.stringify(excalidrawAPI.getSceneElementsIncludingDeleted())
           ) : (
             <></>
-          )}
+          )} */}
+          <SceneGraphEditor />
         </>
       );
     },
-    [langCode, excalidrawAPI],
+    [langCode /* , excalidrawAPI */],
   );
 
   const renderCustomStats = () => {

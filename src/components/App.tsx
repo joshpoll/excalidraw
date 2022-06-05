@@ -420,15 +420,17 @@ class App extends React.Component<AppProps, AppState> {
       height: canvasDOMHeight,
       viewModeEnabled,
     } = this.state;
+    const sceneGraphEditorSpace = 500;
     const canvasWidth = canvasDOMWidth * canvasScale;
-    const canvasHeight = canvasDOMHeight * canvasScale;
+    const canvasHeight =
+      (canvasDOMHeight - sceneGraphEditorSpace) * canvasScale;
     if (viewModeEnabled) {
       return (
         <canvas
           className="excalidraw__canvas"
           style={{
             width: canvasDOMWidth,
-            height: canvasDOMHeight,
+            height: canvasDOMHeight - sceneGraphEditorSpace,
             cursor: CURSOR_TYPE.GRAB,
           }}
           width={canvasWidth}
@@ -450,7 +452,7 @@ class App extends React.Component<AppProps, AppState> {
         className="excalidraw__canvas"
         style={{
           width: canvasDOMWidth,
-          height: canvasDOMHeight,
+          height: canvasDOMHeight - sceneGraphEditorSpace,
         }}
         width={canvasWidth}
         height={canvasHeight}
