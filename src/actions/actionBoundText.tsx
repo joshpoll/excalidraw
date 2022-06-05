@@ -55,7 +55,7 @@ export const actionUnbindText = register({
     return {
       elements,
       appState,
-      commitToHistory: true,
+      commitToHistory: "unbindText",
     };
   },
 });
@@ -130,7 +130,7 @@ export const actionBindText = register({
     return {
       elements: updatedElements,
       appState: { ...appState, selectedElementIds: { [container.id]: true } },
-      commitToHistory: true,
+      commitToHistory: "bindText",
     };
   },
 });

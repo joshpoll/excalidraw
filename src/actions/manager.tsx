@@ -6,6 +6,7 @@ import {
   ActionResult,
   PanelComponentProps,
   ActionSource,
+  NamedActionResult,
 } from "./types";
 import { ExcalidrawElement } from "../element/types";
 import { AppClassProperties, AppState } from "../types";
@@ -43,7 +44,9 @@ const trackAction = (
 export class ActionManager {
   actions = {} as Record<ActionName, Action>;
 
-  updater: (actionResult: ActionResult | Promise<ActionResult>) => void;
+  updater: (
+    actionResult: NamedActionResult | Promise<NamedActionResult>,
+  ) => void;
 
   getAppState: () => Readonly<AppState>;
   getElementsIncludingDeleted: () => readonly ExcalidrawElement[];

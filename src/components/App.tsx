@@ -36,7 +36,7 @@ import {
 import { createRedoAction, createUndoAction } from "../actions/actionHistory";
 import { ActionManager } from "../actions/manager";
 import { actions } from "../actions/register";
-import { ActionResult } from "../actions/types";
+import { ActionResult, NamedActionResult } from "../actions/types";
 import { trackEvent } from "../analytics";
 import { getDefaultAppState, isEraserActive } from "../appState";
 import {
@@ -483,6 +483,10 @@ class App extends React.Component<AppProps, AppState> {
       renderCustomStats,
     } = this.props;
 
+    // // @ts-ignore
+    // console.log("history", this.history.stateHistory);
+    console.log("history", this.history.getSnapshotForTest());
+
     return (
       <div
         className={clsx("excalidraw excalidraw-container", {
@@ -587,7 +591,7 @@ class App extends React.Component<AppProps, AppState> {
   };
 
   private syncActionResult = withBatchedUpdates(
-    (actionResult: ActionResult) => {
+    (actionResult: NamedActionResult) => {
       // Since context menu closes when action triggered so setting to false
       this.contextMenuOpen = false;
       if (this.unmounted || actionResult === false) {
@@ -607,7 +611,7 @@ class App extends React.Component<AppProps, AppState> {
         });
         this.scene.replaceAllElements(actionResult.elements);
         if (actionResult.commitToHistory) {
-          this.history.resumeRecording();
+          this.history.resumeRecording(actionResult.commitToHistory);
         }
       }
 
@@ -620,7 +624,7 @@ class App extends React.Component<AppProps, AppState> {
 
       if (actionResult.appState || editingElement) {
         if (actionResult.commitToHistory) {
-          this.history.resumeRecording();
+          this.history.resumeRecording(actionResult.commitToHistory);
         }
 
         let viewModeEnabled = actionResult?.appState?.viewModeEnabled || false;
@@ -792,7 +796,8 @@ class App extends React.Component<AppProps, AppState> {
     this.resetHistory();
     this.syncActionResult({
       ...scene,
-      commitToHistory: true,
+      // TODO: this is not an action!
+      commitToHistory: "initialize" as any,
     });
   };
 
@@ -5218,7 +5223,8 @@ class App extends React.Component<AppProps, AppState> {
                 isLoading: false,
               },
               replaceFiles: true,
-              commitToHistory: true,
+              // TODO: not an action!
+              commitToHistory: "dropImage" as any,
             });
             return;
           } catch (error: any) {
@@ -5293,7 +5299,8 @@ class App extends React.Component<AppProps, AppState> {
             isLoading: false,
           },
           replaceFiles: true,
-          commitToHistory: true,
+          // TODO: not an action!
+          commitToHistory: "loadFileToCanvas" as any,
         });
       } else if (ret.type === MIME_TYPES.excalidrawlib) {
         await this.library
@@ -5499,12 +5506,12 @@ class App extends React.Component<AppProps, AppState> {
       this.actionManager.getAppState(),
     );
 
-    const mayBeAllowUnbinding = actionUnbindText.contextItemPredicate(
+    const mayBeAllowUnbinding = actionUnbindText.contextItemPredicate!(
       this.actionManager.getElementsIncludingDeleted(),
       this.actionManager.getAppState(),
     );
 
-    const mayBeAllowBinding = actionBindText.contextItemPredicate(
+    const mayBeAllowBinding = actionBindText.contextItemPredicate!(
       this.actionManager.getElementsIncludingDeleted(),
       this.actionManager.getAppState(),
     );
@@ -5529,7 +5536,7 @@ class App extends React.Component<AppProps, AppState> {
 
     if (
       type === "element" &&
-      copyText.contextItemPredicate(elements, this.state) &&
+      copyText.contextItemPredicate!(elements, this.state) &&
       probablySupportsClipboardWriteText
     ) {
       options.push(copyText);
@@ -5566,6 +5573,7 @@ class App extends React.Component<AppProps, AppState> {
                   this.pasteFromClipboard(null);
                   return {
                     commitToHistory: false,
+                    actionName: "paste",
                   };
                 },
                 contextItemLabel: "labels.paste",
@@ -5625,6 +5633,7 @@ class App extends React.Component<AppProps, AppState> {
                   this.pasteFromClipboard(null);
                   return {
                     commitToHistory: false,
+                    actionName: "paste",
                   };
                 },
                 contextItemLabel: "labels.paste",
@@ -5650,7 +5659,7 @@ class App extends React.Component<AppProps, AppState> {
             maybeFlipHorizontal && actionFlipHorizontal,
             maybeFlipVertical && actionFlipVertical,
             (maybeFlipHorizontal || maybeFlipVertical) && separator,
-            actionLink.contextItemPredicate(elements, this.state) && actionLink,
+            actionLink.contextItemPredicate!(elements, this.state) && actionLink,
             actionDuplicateSelection,
             actionToggleLock,
             separator,

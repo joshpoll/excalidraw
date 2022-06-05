@@ -18,6 +18,7 @@ import { newElementWith } from "../element/mutateElement";
 import { getDefaultAppState, isEraserActive } from "../appState";
 import ClearCanvas from "../components/ClearCanvas";
 import clsx from "clsx";
+import { NamedActionResult } from "./types";
 
 export const actionChangeViewBackgroundColor = register({
   name: "changeViewBackgroundColor",
@@ -25,7 +26,9 @@ export const actionChangeViewBackgroundColor = register({
   perform: (_, appState, value) => {
     return {
       appState: { ...appState, ...value },
-      commitToHistory: !!value.viewBackgroundColor,
+      commitToHistory: !!value.viewBackgroundColor
+        ? "changeViewBackgroundColor"
+        : false,
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => {
@@ -74,7 +77,7 @@ export const actionClearCanvas = register({
             ? { ...appState.activeTool, type: "selection" }
             : appState.activeTool,
       },
-      commitToHistory: true,
+      commitToHistory: "clearCanvas",
     };
   },
 
@@ -216,7 +219,7 @@ const zoomToFitElements = (
   elements: readonly ExcalidrawElement[],
   appState: Readonly<AppState>,
   zoomToSelection: boolean,
-) => {
+): NamedActionResult => {
   const nonDeletedElements = getNonDeletedElements(elements);
   const selectedElements = getSelectedElements(nonDeletedElements, appState);
 
@@ -327,7 +330,7 @@ export const actionErase = register({
         selectedGroupIds: {},
         activeTool,
       },
-      commitToHistory: true,
+      commitToHistory: "eraser",
     };
   },
   keyTest: (event) => event.key === KEYS.E,

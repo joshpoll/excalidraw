@@ -23,7 +23,7 @@ export const actionSendBackward = register({
     return {
       elements: moveOneLeft(elements, appState),
       appState,
-      commitToHistory: true,
+      commitToHistory: "sendBackward",
     };
   },
   contextItemLabel: "labels.sendBackward",
@@ -51,7 +51,7 @@ export const actionBringForward = register({
     return {
       elements: moveOneRight(elements, appState),
       appState,
-      commitToHistory: true,
+      commitToHistory: "bringForward",
     };
   },
   contextItemLabel: "labels.bringForward",
@@ -79,7 +79,7 @@ export const actionSendToBack = register({
     return {
       elements: moveAllLeft(elements, appState),
       appState,
-      commitToHistory: true,
+      commitToHistory: "sendToBack",
     };
   },
   contextItemLabel: "labels.sendToBack",
@@ -115,7 +115,7 @@ export const actionBringToFront = register({
     return {
       elements: moveAllRight(elements, appState),
       appState,
-      commitToHistory: true,
+      commitToHistory: "bringToFront",
     };
   },
   contextItemLabel: "labels.bringToFront",

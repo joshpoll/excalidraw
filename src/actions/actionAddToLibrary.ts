@@ -4,6 +4,7 @@ import { getNonDeletedElements } from "../element";
 import { deepCopyElement } from "../element/newElement";
 import { randomId } from "../random";
 import { t } from "../i18n";
+import { NamedActionResult } from "./types";
 
 export const actionAddToLibrary = register({
   name: "addToLibrary",
@@ -37,7 +38,7 @@ export const actionAddToLibrary = register({
           ...items,
         ]);
       })
-      .then(() => {
+      .then((): NamedActionResult => {
         return {
           commitToHistory: false,
           appState: {
@@ -46,7 +47,7 @@ export const actionAddToLibrary = register({
           },
         };
       })
-      .catch((error) => {
+      .catch((error): NamedActionResult => {
         return {
           commitToHistory: false,
           appState: {

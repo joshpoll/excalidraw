@@ -43,7 +43,7 @@ export const actionFinalize = register({
             cursorButton: "up",
             editingLinearElement: null,
           },
-          commitToHistory: true,
+          commitToHistory: "finalize",
         };
       }
     }
@@ -179,7 +179,8 @@ export const actionFinalize = register({
             : appState.selectedElementIds,
         pendingImageElement: null,
       },
-      commitToHistory: appState.activeTool.type === "freedraw",
+      commitToHistory:
+        appState.activeTool.type === "freedraw" ? "finalize" : false,
     };
   },
   keyTest: (event, appState) =>

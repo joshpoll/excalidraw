@@ -25,14 +25,55 @@ export type ActionResult =
     }
   | false;
 
+export type SaveActionResult = {
+  actionName: ActionName;
+  elements?: readonly ExcalidrawElement[] | null;
+  appState?: MarkOptional<
+    AppState,
+    "offsetTop" | "offsetLeft" | "width" | "height"
+  > | null;
+  files?: BinaryFiles | null;
+  commitToHistory: true;
+  syncHistory?: boolean;
+  replaceFiles?: boolean;
+};
+
+export type NoSaveActionResult = {
+  elements?: readonly ExcalidrawElement[] | null;
+  appState?: MarkOptional<
+    AppState,
+    "offsetTop" | "offsetLeft" | "width" | "height"
+  > | null;
+  files?: BinaryFiles | null;
+  commitToHistory: false;
+  syncHistory?: boolean;
+  replaceFiles?: boolean;
+};
+
+// export type NamedActionResult = SaveActionResult | NoSaveActionResult | false;
+
+export type NamedActionResult =
+  | {
+      elements?: readonly ExcalidrawElement[] | null;
+      appState?: MarkOptional<
+        AppState,
+        "offsetTop" | "offsetLeft" | "width" | "height"
+      > | null;
+      files?: BinaryFiles | null;
+      commitToHistory: ActionName | false;
+      syncHistory?: boolean;
+      replaceFiles?: boolean;
+    }
+  | false;
+
 type ActionFn = (
   elements: readonly ExcalidrawElement[],
   appState: Readonly<AppState>,
   formData: any,
   app: AppClassProperties,
-) => ActionResult | Promise<ActionResult>;
+) => NamedActionResult | Promise<NamedActionResult>;
 
-export type UpdaterFn = (res: ActionResult) => void;
+export type UpdaterFn = (res: NamedActionResult) => void;
 export type ActionFilterFn = (action: Action) => void;
 
 export type ActionName =

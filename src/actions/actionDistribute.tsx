@@ -47,7 +47,7 @@ export const distributeHorizontally = register({
         space: "between",
         axis: "x",
       }),
-      commitToHistory: true,
+      commitToHistory: "distributeHorizontally",
     };
   },
   keyTest: (event) =>
@@ -77,7 +77,7 @@ export const distributeVertically = register({
         space: "between",
         axis: "y",
       }),
-      commitToHistory: true,
+      commitToHistory: "distributeVertically",
     };
   },
   keyTest: (event) =>

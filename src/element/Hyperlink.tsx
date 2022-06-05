@@ -259,7 +259,7 @@ export const actionLink = register({
         showHyperlinkPopup: "editor",
         openMenu: null,
       },
-      commitToHistory: true,
+      commitToHistory: "hyperlink",
     };
   },
   trackEvent: { category: "hyperlink", action: "click" },

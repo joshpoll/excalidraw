@@ -29,6 +29,7 @@ import { MaybeTransformHandleType } from "./element/transformHandles";
 import Library from "./data/library";
 import type { FileSystemHandle } from "./data/filesystem";
 import type { ALLOWED_IMAGE_MIME_TYPES, MIME_TYPES } from "./constants";
+import { ActionName } from "./actions/types";
 
 export type Point = Readonly<RoughPoint>;
 

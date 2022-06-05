@@ -1,4 +1,4 @@
-import { Action, ActionResult } from "./types";
+import { Action, ActionName, ActionResult, NamedActionResult } from "./types";
 import { undo, redo } from "../components/icons";
 import { ToolButton } from "../components/ToolButton";
 import { t } from "../i18n";
@@ -11,10 +11,11 @@ import { fixBindingsAfterDeletion } from "../element/binding";
 import { arrayToMap } from "../utils";
 
 const writeData = (
+  actionName: ActionName,
   prevElements: readonly ExcalidrawElement[],
   appState: AppState,
   updater: () => HistoryEntry | null,
-): ActionResult => {
+): NamedActionResult => {
   const commitToHistory = false;
   if (
     !appState.multiElement &&
@@ -64,7 +65,7 @@ export const createUndoAction: ActionCreator = (history) => ({
   name: "undo",
   trackEvent: { category: "history" },
   perform: (elements, appState) =>
-    writeData(elements, appState, () => history.undoOnce()),
+    writeData("undo", elements, appState, () => history.undoOnce()),
   keyTest: (event) =>
     event[KEYS.CTRL_OR_CMD] &&
     event.key.toLowerCase() === KEYS.Z &&
@@ -85,7 +86,7 @@ export const createRedoAction: ActionCreator = (history) => ({
   name: "redo",
   trackEvent: { category: "history" },
   perform: (elements, appState) =>
-    writeData(elements, appState, () => history.redoOnce()),
+    writeData("redo", elements, appState, () => history.redoOnce()),
   keyTest: (event) =>
     (event[KEYS.CTRL_OR_CMD] &&
       event.shiftKey &&

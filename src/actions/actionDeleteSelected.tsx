@@ -119,7 +119,7 @@ export const actionDeleteSelected = register({
                 : [0],
           },
         },
-        commitToHistory: true,
+        commitToHistory: "deleteSelectedElements",
       };
     }
     let { elements: nextElements, appState: nextAppState } =
@@ -141,7 +141,9 @@ export const actionDeleteSelected = register({
       commitToHistory: isSomeElementSelected(
         getNonDeletedElements(elements),
         appState,
-      ),
+      )
+        ? "deleteSelectedElements"
+        : false,
     };
   },
   contextItemLabel: "labels.delete",

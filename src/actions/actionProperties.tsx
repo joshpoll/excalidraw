@@ -78,6 +78,7 @@ import {
 import { hasStrokeColor } from "../scene/comparisons";
 import { arrayToMap } from "../utils";
 import { register } from "./register";
+import { NamedActionResult } from './types';
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
 
@@ -151,7 +152,7 @@ const changeFontSize = (
   appState: AppState,
   getNewFontSize: (element: ExcalidrawTextElement) => number,
   fallbackValue?: ExcalidrawTextElement["fontSize"],
-) => {
+): NamedActionResult => {
   const newFontSizes = new Set<number>();
 
   return {
@@ -186,7 +187,7 @@ const changeFontSize = (
           ? [...newFontSizes][0]
           : fallbackValue ?? appState.currentItemFontSize,
     },
-    commitToHistory: true,
+    commitToHistory: "changeFontSize",
   };
 };
 
@@ -296,7 +297,7 @@ export const actionChangeFillStyle = register({
         }),
       ),
       appState: { ...appState, currentItemFillStyle: value },
-      commitToHistory: true,
+      commitToHistory: "changeFillStyle",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -346,7 +347,7 @@ export const actionChangeStrokeWidth = register({
         }),
       ),
       appState: { ...appState, currentItemStrokeWidth: value },
-      commitToHistory: true,
+      commitToHistory: "changeStrokeWidth",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -395,7 +396,7 @@ export const actionChangeSloppiness = register({
         }),
       ),
       appState: { ...appState, currentItemRoughness: value },
-      commitToHistory: true,
+      commitToHistory: "changeSloppiness",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -443,7 +444,7 @@ export const actionChangeStrokeStyle = register({
         }),
       ),
       appState: { ...appState, currentItemStrokeStyle: value },
-      commitToHistory: true,
+      commitToHistory: "changeStrokeStyle",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -495,7 +496,7 @@ export const actionChangeOpacity = register({
         true,
       ),
       appState: { ...appState, currentItemOpacity: value },
-      commitToHistory: true,
+      commitToHistory: "changeOpacity",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -646,7 +647,7 @@ export const actionChangeFontFamily = register({
         ...appState,
         currentItemFontFamily: value,
       },
-      commitToHistory: true,
+      commitToHistory: "changeFontFamily",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => {
@@ -726,7 +727,7 @@ export const actionChangeTextAlign = register({
         ...appState,
         currentItemTextAlign: value,
       },
-      commitToHistory: true,
+      commitToHistory: "changeTextAlign",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => {
@@ -799,7 +800,7 @@ export const actionChangeVerticalAlign = register({
       appState: {
         ...appState,
       },
-      commitToHistory: true,
+      commitToHistory: "changeVerticalAlign",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => {
@@ -870,7 +871,7 @@ export const actionChangeSharpness = register({
           ? value
           : appState.currentItemLinearStrokeSharpness,
       },
-      commitToHistory: true,
+      commitToHistory: "changeSharpness",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -940,7 +941,7 @@ export const actionChangeArrowhead = register({
           ? "currentItemStartArrowhead"
           : "currentItemEndArrowhead"]: value.type,
       },
-      commitToHistory: true,
+      commitToHistory: "changeArrowhead",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => {

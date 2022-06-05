@@ -125,7 +125,7 @@ export const actionGroup = register({
         getNonDeletedElements(updatedElementsInOrder),
       ),
       elements: updatedElementsInOrder,
-      commitToHistory: true,
+      commitToHistory: "group",
     };
   },
   contextItemLabel: "labels.group",
@@ -185,7 +185,7 @@ export const actionUngroup = register({
       appState: updateAppState,
 
       elements: nextElements,
-      commitToHistory: true,
+      commitToHistory: "ungroup",
     };
   },
   keyTest: (event) =>

@@ -40,7 +40,7 @@ export const actionFlipHorizontal = register({
     return {
       elements: flipSelectedElements(elements, appState, "horizontal"),
       appState,
-      commitToHistory: true,
+      commitToHistory: "flipHorizontal",
     };
   },
   keyTest: (event) => event.shiftKey && event.code === "KeyH",
@@ -56,7 +56,7 @@ export const actionFlipVertical = register({
     return {
       elements: flipSelectedElements(elements, appState, "vertical"),
       appState,
-      commitToHistory: true,
+      commitToHistory: "flipVertical",
     };
   },
   keyTest: (event) => event.shiftKey && event.code === "KeyV",

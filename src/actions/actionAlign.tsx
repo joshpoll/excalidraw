@@ -51,7 +51,7 @@ export const actionAlignTop = register({
         position: "start",
         axis: "y",
       }),
-      commitToHistory: true,
+      commitToHistory: "alignTop",
     };
   },
   keyTest: (event) =>
@@ -81,7 +81,7 @@ export const actionAlignBottom = register({
         position: "end",
         axis: "y",
       }),
-      commitToHistory: true,
+      commitToHistory: "alignBottom",
     };
   },
   keyTest: (event) =>
@@ -111,7 +111,7 @@ export const actionAlignLeft = register({
         position: "start",
         axis: "x",
       }),
-      commitToHistory: true,
+      commitToHistory: "alignLeft",
     };
   },
   keyTest: (event) =>
@@ -142,7 +142,7 @@ export const actionAlignRight = register({
         position: "end",
         axis: "x",
       }),
-      commitToHistory: true,
+      commitToHistory: "alignRight",
     };
   },
   keyTest: (event) =>
@@ -173,7 +173,7 @@ export const actionAlignVerticallyCentered = register({
         position: "center",
         axis: "y",
       }),
-      commitToHistory: true,
+      commitToHistory: "alignVerticallyCentered",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (
@@ -199,7 +199,7 @@ export const actionAlignHorizontallyCentered = register({
         position: "center",
         axis: "x",
       }),
-      commitToHistory: true,
+      commitToHistory: "alignHorizontallyCentered",
     };
   },
   PanelComponent: ({ elements, appState, updateData }) => (

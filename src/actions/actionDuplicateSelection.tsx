@@ -35,13 +35,13 @@ export const actionDuplicateSelection = register({
       return {
         elements,
         appState: ret.appState,
-        commitToHistory: true,
+        commitToHistory: "duplicateSelection",
       };
     }
 
     return {
       ...duplicateElements(elements, appState),
-      commitToHistory: true,
+      commitToHistory: "duplicateSelection",
     };
   },
   contextItemLabel: "labels.duplicateSelection",

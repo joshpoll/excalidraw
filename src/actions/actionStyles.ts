@@ -71,7 +71,7 @@ export const actionPasteStyles = register({
         }
         return element;
       }),
-      commitToHistory: true,
+      commitToHistory: "pasteStyles",
     };
   },
   contextItemLabel: "labels.pasteStyles",

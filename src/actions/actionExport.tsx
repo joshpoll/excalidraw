@@ -226,7 +226,7 @@ export const actionLoadScene = register({
         elements: loadedElements,
         appState: loadedAppState,
         files,
-        commitToHistory: true,
+        commitToHistory: "loadScene",
       };
     } catch (error: any) {
       if (error?.name === "AbortError") {

@@ -2,18 +2,22 @@ import { AppState } from "./types";
 import { ExcalidrawElement } from "./element/types";
 import { isLinearElement } from "./element/typeChecks";
 import { deepCopyElement } from "./element/newElement";
+import { ActionName } from "./actions/types";
 
 export interface HistoryEntry {
+  action?: string;
   appState: ReturnType<typeof clearAppStatePropertiesForHistory>;
   elements: ExcalidrawElement[];
 }
 
 interface DehydratedExcalidrawElement {
+  action?: string;
   id: string;
   versionNonce: number;
 }
 
 interface DehydratedHistoryEntry {
+  action?: string;
   appState: string;
   elements: DehydratedExcalidrawElement[];
 }
@@ -35,12 +39,15 @@ class History {
   private stateHistory: DehydratedHistoryEntry[] = [];
   private redoStack: DehydratedHistoryEntry[] = [];
   private lastEntry: HistoryEntry | null = null;
+  private action: ActionName | null = null;
 
   private hydrateHistoryEntry({
+    action,
     appState,
     elements,
   }: DehydratedHistoryEntry): HistoryEntry {
     return {
+      action,
       appState: JSON.parse(appState),
       elements: elements.map((dehydratedExcalidrawElement) => {
         const element = this.elementCache
@@ -57,10 +64,12 @@ class History {
   }
 
   private dehydrateHistoryEntry({
+    action,
     appState,
     elements,
   }: HistoryEntry): DehydratedHistoryEntry {
     return {
+      action,
       appState: JSON.stringify(appState),
       elements: elements.map((element: ExcalidrawElement) => {
         if (!this.elementCache.has(element.id)) {
@@ -100,8 +109,10 @@ class History {
   private generateEntry = (
     appState: AppState,
     elements: readonly ExcalidrawElement[],
+    action?: string,
   ): DehydratedHistoryEntry =>
     this.dehydrateHistoryEntry({
+      action,
       appState: clearAppStatePropertiesForHistory(appState),
       elements: elements.reduce((elements, element) => {
         if (
@@ -181,8 +192,12 @@ class History {
     return false;
   }
 
-  pushEntry(appState: AppState, elements: readonly ExcalidrawElement[]) {
-    const newEntryDehydrated = this.generateEntry(appState, elements);
+  pushEntry(
+    appState: AppState,
+    elements: readonly ExcalidrawElement[],
+    action?: string,
+  ) {
+    const newEntryDehydrated = this.generateEntry(appState, elements, action);
     const newEntry: HistoryEntry = this.hydrateHistoryEntry(newEntryDehydrated);
 
     if (newEntry) {
@@ -242,20 +257,28 @@ class History {
    *  because the action potentially mutates appState/elements before storing
    *  it.
    */
-  setCurrentState(appState: AppState, elements: readonly ExcalidrawElement[]) {
+  setCurrentState(
+    appState: AppState,
+    elements: readonly ExcalidrawElement[],
+    action?: string,
+  ) {
     this.lastEntry = this.hydrateHistoryEntry(
-      this.generateEntry(appState, elements),
+      this.generateEntry(appState, elements, action),
     );
   }
 
   // Suspicious that this is called so many places. Seems error-prone.
-  resumeRecording() {
+  resumeRecording(action?: ActionName | null) {
+    this.action = action ?? null;
+    // if (action !== undefined) {
+    //   this.action = action;
+    // }
     this.recording = true;
   }
 
   record(state: AppState, elements: readonly ExcalidrawElement[]) {
     if (this.recording) {
-      this.pushEntry(state, elements);
+      this.pushEntry(state, elements, this.action ?? undefined);
       this.recording = false;
     }
   }

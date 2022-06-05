@@ -27,7 +27,7 @@ export const actionToggleLock = register({
         return newElementWith(element, { locked: operation === "lock" });
       }),
       appState,
-      commitToHistory: true,
+      commitToHistory: "toggleLock",
     };
   },
   contextItemLabel: (elements, appState) => {

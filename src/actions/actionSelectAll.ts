@@ -28,7 +28,7 @@ export const actionSelectAll = register({
         },
         getNonDeletedElements(elements),
       ),
-      commitToHistory: true,
+      commitToHistory: "selectAll",
     };
   },
   contextItemLabel: "labels.selectAll",
